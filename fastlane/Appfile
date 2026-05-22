@@ -1,0 +1,4 @@
+# Optional — only needed for TestFlight / App Store lanes (Step 3+).
+# app_identifier("com.mario.mobileTest.Booking.CICD-Demo")
+# apple_id("your@email.com")
+# team_id("8EYRWA5YD2")

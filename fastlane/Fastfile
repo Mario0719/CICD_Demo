@@ -1,0 +1,38 @@
+default_platform(:ios)
+
+platform :ios do
+  # 本机默认模拟器；CI 可通过环境变量覆盖：CI_SIMULATOR=iPhone 16 fastlane test
+  SIMULATOR = ENV["CI_SIMULATOR"] || "iPhone 17 Pro"
+
+  desc "Run unit tests (CI gate — same as Cmd+U)"
+  lane :test do
+    scan(
+      project: "CICD_Demo.xcodeproj",
+      scheme: "CICD_Demo",
+      device: SIMULATOR,
+      clean: true,
+      code_coverage: true,
+      output_directory: "./fastlane/test_output",
+      result_bundle: true
+    )
+  end
+
+  desc "Build Release .ipa (signing required)"
+  lane :build do
+    gym(
+      project: "CICD_Demo.xcodeproj",
+      scheme: "CICD_Demo",
+      configuration: "Release",
+      export_method: "development",
+      output_directory: "./fastlane/build_output",
+      output_name: "CICD_Demo",
+      clean: true
+    )
+  end
+
+  desc "Test then build — local full pipeline"
+  lane :ci_local do
+    test
+    build
+  end
+end

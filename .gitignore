@@ -1,0 +1,15 @@
+.DS_Store
+*.xcuserstate
+xcuserdata/
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+fastlane/report.xml
+fastlane/test_output/
+!fastlane/test_output/.gitkeep
+fastlane/test_output/runs/
+fastlane/build_output/
+fastlane/README.md
+.bundle/
+vendor/
