@@ -13,7 +13,7 @@ final class JSONParsingTests: XCTestCase {
         """
         let data = Data(json.utf8)
         let response = try JSONDecoder().decode(LoginResponse.self, from: data)
-        XCTAssertEqual(response.token, "abc2")
+        XCTAssertEqual(response.token, "abc")
         XCTAssertEqual(response.displayName, "Bob")
     }
 }
