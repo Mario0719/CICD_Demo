@@ -8,12 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Job 名 "test" 会出现在 PR Checks / 分支保护的可选列表里
   test:
     runs-on: macos-15
-    defaults:
-      run:
-        working-directory: .
 
     steps:
       - name: Checkout
@@ -22,10 +18,13 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
-      - name: Show environment
+      - name: Pick available iPhone simulator
         run: |
           xcodebuild -version
-          xcrun simctl list devices available | grep -i iphone | head -5
+          xcrun simctl list devices available | grep -i iphone | head -8
+          SIM_NAME=$(xcrun simctl list devices available | grep -E "iPhone" | head -1 | sed -E 's/^[[:space:]]*([^(]+).*/\1/' | xargs)
+          echo "Using simulator: $SIM_NAME"
+          echo "CI_SIMULATOR=$SIM_NAME" >> "$GITHUB_ENV"
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -35,14 +34,11 @@ jobs:
         continue-on-error: true
 
       - name: Run tests (Fastlane)
-        env:
-          # GitHub 虚拟机上的模拟器名可能与本地不同，可按 Actions 日志调整
-          CI_SIMULATOR: iPhone 16
         run: |
           if bundle check 2>/dev/null; then
             bundle exec fastlane test
           else
-            gem install fastlane -N
+            gem install fastlane -N --no-document
             fastlane test
           fi
 
